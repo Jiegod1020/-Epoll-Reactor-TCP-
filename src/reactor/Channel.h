@@ -30,11 +30,11 @@ public:
     void setErrorCallback(EventCallback cb) { errorCallback_ = std::move(cb); }
 
     // 修改“希望监听”的事件集合，然后同步到所属 EventLoop 的 epoll 实例。
-    void enableReading();
-    void enableWriting();
-    void disableWriting();
-    void disableAll();
-    void remove();
+    void enableReading();  // 监听可读，含 ET 与 ONESHOT 标志
+    void enableWriting();  // 监听可写；通常只在输出缓冲区非空时开启
+    void disableWriting(); // 停止监听可写，保留其他事件
+    void disableAll();     // 停止监听所有事件
+    void remove();         // 从所属 epoll 实例删除该 fd
 
     int fd() const { return fd_; }
     uint32_t events() const { return events_; }
@@ -54,7 +54,7 @@ private:
     uint32_t revents_;  // epoll 最近一次返回的实际就绪事件
     bool added_;        // 当前 fd 是否已经加入所属 epoll 实例
 
-    EventCallback readCallback_;
+    EventCallback readCallback_;  // EPOLLIN / EPOLLPRI 到达时执行
     EventCallback writeCallback_;
     EventCallback closeCallback_;
     EventCallback errorCallback_;

@@ -1,0 +1,11 @@
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/Experimental.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/Nightly.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/Continuous.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/NightlyMemoryCheck.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/coreactor.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/simple_tcp_server.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/protocol_test.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/RUN_TESTS.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/INSTALL.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/ZERO_CHECK.dir

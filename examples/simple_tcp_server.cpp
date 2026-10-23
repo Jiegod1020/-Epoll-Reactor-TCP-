@@ -11,6 +11,7 @@
 namespace {
 
 void fail(const char* message) {
+    // errno 保存最近一次失败系统调用的错误码，strerror 转成可读文本。
     std::cerr << message << ": " << std::strerror(errno) << '\n';
     std::exit(EXIT_FAILURE);
 }
@@ -18,6 +19,7 @@ void fail(const char* message) {
 }  // namespace
 
 int main(int argc, char* argv[]) {
+    // 这是教学用阻塞服务器，与 coreactor 主程序相互独立。
     int port = 8080;
     if (argc >= 2) {
         port = std::stoi(argv[1]);
@@ -58,6 +60,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << "simple TCP server listening on 0.0.0.0:" << port << '\n';
 
+    // 外层循环一次接一个客户端；当前客户端结束前不会 accept 下一位客户端。
     while (true) {
         // 5. accept 会阻塞，直到有客户端连接。
         sockaddr_in clientAddress{};
@@ -79,6 +82,7 @@ int main(int argc, char* argv[]) {
                   << ':' << ntohs(clientAddress.sin_port) << '\n';
 
         // 当前是单线程示例：一个客户端断开后，才会 accept 下一个客户端。
+        // 内层循环持续处理这个客户端，直到 EOF 或读写错误。
         while (true) {
             char buffer[4096];
 
@@ -98,6 +102,7 @@ int main(int argc, char* argv[]) {
 
             // 7. Echo：把收到的数据完整写回客户端。
             ssize_t sentTotal = 0;
+            // write 允许短写，sentTotal 记录已成功写回的前缀长度。
             while (sentTotal < received) {
                 ssize_t sent = write(clientFd, buffer + sentTotal,
                                      static_cast<size_t>(received - sentTotal));

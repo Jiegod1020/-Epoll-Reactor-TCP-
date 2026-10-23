@@ -1,6 +1,5 @@
 #include "EventLoop.h"
 #include "util/Logger.h"
-#include "util/SocketUtils.h"
 #include <unistd.h>
 #include <cassert>
 
@@ -26,6 +25,7 @@ EventLoop::EventLoop()
         abort();
     }
 
+    // epoll_wait 需要一块可写数组，最多一次返回 kMaxEvents 个就绪项。
     events_.resize(kMaxEvents);
 
     // 把 eventfd 也包装成 Channel，这样 EventLoop 可以用同一套事件分发机制
@@ -33,22 +33,21 @@ EventLoop::EventLoop()
     wakeupChannel_ = std::make_unique<Channel>(this, wakeupFd_);
     wakeupChannel_->setReadCallback([this]() { handleWakeup(); });
     wakeupChannel_->enableReading();
-
-    scheduler_ = std::make_unique<Scheduler>(this);
 }
 
 EventLoop::~EventLoop() {
     // 先销毁 wakeupChannel_，让它有机会从 epoll 中删除；然后再关闭 epoll fd。
     // 如果先 close(epollFd_)，Channel 析构时的 EPOLL_CTL_DEL 就会操作无效 fd。
     wakeupChannel_.reset();
-    scheduler_.reset();
     close(wakeupFd_);
     close(epollFd_);
 }
 
 void EventLoop::loop() {
+    // 一个 EventLoop 只允许一个线程运行 loop()。
     assert(!looping_);
     looping_ = true;
+    // 之后 runInLoop() 用这个 id 判断能否直接执行回调。
     threadId_ = std::this_thread::get_id();
     quit_ = false;
 
@@ -58,8 +57,10 @@ void EventLoop::loop() {
         // vector 必须保持足够的 size，epoll_wait 会直接把结果写入 data()。
         // 不能使用 clear()，否则下方按下标访问 events_[i] 会越界。
         events_.resize(kMaxEvents);
+        // timeout=-1 表示没有事件时一直睡眠，由 socket 或 eventfd 唤醒。
         int numEvents = epoll_wait(epollFd_, events_.data(), kMaxEvents, -1);
 
+        // EINTR 表示系统调用被信号打断，不是 epoll 故障；本轮没有事件，继续循环。
         if (numEvents < 0 && errno != EINTR) {
             LOG_ERROR("epoll_wait failed");
             break;
@@ -67,6 +68,7 @@ void EventLoop::loop() {
 
         // 第一阶段：处理本轮已经就绪的 I/O 事件。
         for (int i = 0; i < numEvents; ++i) {
+            // 注册时把 Channel* 存进 epoll_event.data.ptr，因此可以恢复回调对象。
             Channel* channel = static_cast<Channel*>(events_[i].data.ptr);
             channel->setRevents(events_[i].events);
             channel->handleEvent();
@@ -75,8 +77,6 @@ void EventLoop::loop() {
         // 第二阶段：处理其他线程投递的任务，例如把新连接交给从 Reactor。
         doPendingFunctors();
 
-        // 第三阶段：运行因 I/O 就绪而被唤醒的协程。
-        scheduler_->start();
     }
 
     looping_ = false;
@@ -99,6 +99,7 @@ void EventLoop::updateChannel(Channel* channel) {
 
     int fd = channel->fd();
     if (channel->events() == 0) {
+        // 关注集合为空时，不做 MOD，而是彻底从 epoll 删除。
         removeChannel(channel);
         return;
     }
@@ -110,6 +111,7 @@ void EventLoop::updateChannel(Channel* channel) {
                                << " fd=" << fd << " failed");
         return;
     }
+    // 只有 epoll_ctl 成功后才更新本地状态，失败时保留旧状态供错误处理。
     channel->setAdded(true);
 }
 
@@ -117,6 +119,7 @@ void EventLoop::removeChannel(Channel* channel) {
     if (!channel->added()) {
         return;
     }
+    // DEL 的 event 参数可以为空；ENOENT 表示内核中本来就没有该 fd。
     if (epoll_ctl(epollFd_, EPOLL_CTL_DEL, channel->fd(), nullptr) < 0 &&
         errno != ENOENT) {
         LOG_ERROR("epoll_ctl del fd=" << channel->fd() << " failed");
@@ -139,6 +142,7 @@ void EventLoop::runInLoop(Functor cb) {
 
 void EventLoop::queueInLoop(Functor cb) {
     {
+        // 多个生产线程可以投递任务，因此入队操作必须加锁。
         std::lock_guard<std::mutex> lock(mutex_);
         pendingFunctors_.push_back(std::move(cb));
     }
@@ -148,6 +152,7 @@ void EventLoop::queueInLoop(Functor cb) {
 }
 
 void EventLoop::wakeup() {
+    // eventfd 接收一个 8 字节整数；写入 1 会让它变成可读并唤醒 epoll_wait。
     uint64_t one = 1;
     ssize_t n = write(wakeupFd_, &one, sizeof(one));
     if (n != sizeof(one) && errno != EAGAIN) {
@@ -174,6 +179,7 @@ void EventLoop::doPendingFunctors() {
         functors.swap(pendingFunctors_);
     }
 
+    // functors 是任务队列的快照；执行期间新投递的任务会留到下一轮处理。
     for (auto& func : functors) {
         func();
     }

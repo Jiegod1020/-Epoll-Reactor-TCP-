@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Lenovo\Doubao\chats\2026-09-10\new-chat-2\Epoll-Reactor-TCP-Server\build\CMakeFiles\82df68a8510a7d83c7aa56c06a3d2f3c\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{081ABDF1-6FEA-3D4C-8676-D592810F648B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

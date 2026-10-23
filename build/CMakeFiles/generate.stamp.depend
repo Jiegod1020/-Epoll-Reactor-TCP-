@@ -1,0 +1,26 @@
+# CMake generation dependency list for this directory.
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/CMakeLists.txt
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/3.29.5-msvc4/CMakeCXXCompiler.cmake
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/3.29.5-msvc4/CMakeRCCompiler.cmake
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/3.29.5-msvc4/CMakeSystem.cmake
+C:/Users/Lenovo/Doubao/chats/2026-09-10/new-chat-2/Epoll-Reactor-TCP-Server/build/CMakeFiles/cmake.verify_globs
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeCXXInformation.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeGenericSystem.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeInitializeConfigs.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeRCInformation.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeSystemSpecificInformation.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CMakeSystemSpecificInitialize.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CTest.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CTestTargets.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/CTestUseLaunchers.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Compiler/MSVC-CXX.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Compiler/MSVC.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/DartConfiguration.tcl.in
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Platform/Windows-Initialize.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Platform/Windows-MSVC-CXX.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Platform/Windows-MSVC.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Platform/Windows.cmake
+D:/vs/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.29/Modules/Platform/WindowsPaths.cmake

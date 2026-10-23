@@ -10,12 +10,14 @@ ssize_t Buffer::readFd(int fd, int* savedErrno) {
     char extrabuf[65536];
     iovec vec[2];
 
+    // readv 的第一段目标是 Buffer 当前可写区，第二段目标是栈上的临时空间。
     size_t writable = writableBytes();
     vec[0].iov_base = beginWrite();
     vec[0].iov_len = writable;
     vec[1].iov_base = extrabuf;
     vec[1].iov_len = sizeof(extrabuf);
 
+    // 一次系统调用可以填满两个 iovec；返回值 n 是总共读取的字节数。
     ssize_t n = readv(fd, vec, 2);
     if (n < 0) {
         *savedErrno = errno;
@@ -33,8 +35,10 @@ ssize_t Buffer::readFd(int fd, int* savedErrno) {
 void Buffer::makeSpace(size_t len) {
     // 优先复用已经消费掉的前置空间；只有总空闲空间仍不足时才扩容。
     if (writableBytes() + prependableBytes() < len) {
+        // 可写区与已消费区合起来仍不够，直接扩到“当前写位置 + 所需长度”。
         buffer_.resize(writerIndex_ + len);
     } else {
+        // 总空间够，只是前面有垃圾字节；把未消费数据搬到开头再写。
         // 内部腾挪，把可读数据移到缓冲区头部
         size_t readable = readableBytes();
         std::copy(begin() + readerIndex_,

@@ -12,11 +12,13 @@ namespace coreactor {
 
 // 把 fd 设置为非阻塞模式。Reactor 线程绝不能被单个客户端的 read/write 卡住。
 inline int setNonBlock(int fd) {
+    // 先取现有文件状态标志，不能覆盖已有的 append 等标志。
     int flags = fcntl(fd, F_GETFL, 0);
     if (flags == -1) {
         LOG_ERROR("fcntl F_GETFL failed");
         return -1;
     }
+    // 用按位或增加 O_NONBLOCK，同时保留原标志。
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
         LOG_ERROR("fcntl F_SETFL nonblock failed");
         return -1;
@@ -44,10 +46,11 @@ inline int createListenFd(uint16_t port) {
         return -1;
     }
 
+    // sockaddr_in 是 IPv4 地址结构；先清零避免未初始化字段影响系统调用。
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = htonl(INADDR_ANY); // 监听所有本地 IPv4 网卡
+    addr.sin_port = htons(port);              // 端口也要转成网络字节序
 
     // bind 把 socket 绑定到本机所有网卡的指定端口。
     if (bind(listenFd, (sockaddr*)&addr, sizeof(addr)) < 0) {

@@ -5,6 +5,7 @@
 namespace coreactor {
 
 Channel::Channel(EventLoop* loop, int fd)
+    // Channel 不拥有 fd，只记录所属 loop 和被代理的 fd；具体 close 由连接对象负责。
     : loop_(loop)
     , fd_(fd)
     , events_(0)
@@ -18,6 +19,7 @@ Channel::~Channel() {
 }
 
 void Channel::handleEvent() {
+    // revents_ 是最近一次 epoll_wait 返回的事件位掩码，可以同时包含多种事件。
     // 对于“挂起但不可读”的情况，连接通常已经被对端关闭。
     // 如果同时有 EPOLLIN，仍优先读，因为读操作可能读到最后一批数据。
     if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
@@ -57,6 +59,7 @@ void Channel::enableWriting() {
 }
 
 void Channel::disableWriting() {
+    // 位运算只清除 EPOLLOUT，不影响可能同时开启的 EPOLLIN。
     events_ &= ~EPOLLOUT;
     update();
 }
@@ -68,6 +71,7 @@ void Channel::disableAll() {
 }
 
 void Channel::remove() {
+    // added_ 防止重复执行 EPOLL_CTL_DEL。
     if (added_) {
         loop_->removeChannel(this);
     }
